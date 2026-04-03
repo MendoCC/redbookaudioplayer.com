@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redbook — USB Audio CD Player for Android</title>
+    <meta name="description" content="Play audio CDs on your Android device. Connect a USB CD drive, insert a disc, and experience bit-perfect 16-bit/44.1kHz playback. The way music was meant to be heard.">
+    <meta name="keywords" content="CD player, Android, USB, audiophile, bit-perfect, FLAC, lossless, FiiO, DAP, Red Book, 44.1kHz, 16-bit, PCM">
+    <meta property="og:title" content="Redbook — USB Audio CD Player for Android">
+    <meta property="og:description" content="The first bit-perfect CD player for Android. Plug in a USB drive. Insert a disc. Listen.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://redbookaudioplayer.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0A0A0F;
+            --bg-card: #111118;
+            --text: #E8E8EE;
+            --text-dim: #888899;
+            --text-faint: #555566;
+            --accent: #C0C0C8;
+            --border: #1E1E28;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 24px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(80,80,120,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-disc {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                var(--bg) 12%,
+                #555 13%, #444 14%, var(--bg) 15%,
+                #333 16%,
+                #2a2a30 20%,
+                #252528 30%,
+                #2a2a30 40%,
+                #252528 50%,
+                #2a2a30 60%,
+                #252528 70%,
+                #1a1a20 80%,
+                #151518 90%,
+                #111115 100%
+            );
+            box-shadow: 0 0 80px rgba(100,100,140,0.1), inset 0 0 30px rgba(0,0,0,0.5);
+            margin-bottom: 48px;
+            animation: spin 20s linear infinite;
+            position: relative;
+        }
+
+        .hero-disc::after {
+            content: '';
+            position: absolute;
+            top: 10%; left: 10%; right: 50%; bottom: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 100%);
+            border-radius: 50%;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(14px, 2vw, 18px);
+            color: var(--text-dim);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 400;
+            margin-bottom: 48px;
+        }
+
+        .hero .tagline {
+            font-size: clamp(18px, 3vw, 28px);
+            font-weight: 300;
+            color: var(--text);
+            max-width: 600px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .hero .tagline em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .hero .sub-tagline {
+            font-size: 15px;
+            color: var(--text-faint);
+            max-width: 500px;
+            margin-bottom: 48px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 48px;
+            border: 1px solid #444;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            color: var(--text-faint);
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* ============ HERO PHOTO ============ */
+        .hero-photo {
+            padding: 0;
+            border-top: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-photo img {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.85);
+        }
+
+        .hero-photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 48px 32px 32px;
+            background: linear-gradient(transparent, rgba(10,10,15,0.95));
+        }
+
+        .hero-photo-overlay p {
+            font-size: clamp(16px, 2.5vw, 22px);
+            font-weight: 300;
+            color: var(--accent);
+            text-align: center;
+            font-style: italic;
+        }
+
+    /* ============ NOSTALGIA SECTION ============ */
+        .nostalgia {
+            padding: 120px 24px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .nostalgia .lead {
+            font-size: clamp(20px, 3vw, 32px);
+            font-weight: 300;
+            color: var(--text);
+            max-width: 700px;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+        }
+
+        .nostalgia .body {
+            font-size: 16px;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* ============ HOW IT WORKS ============ */
+        .how-it-works {
+            padding: 100px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 0.4em;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            margin-bottom: 64px;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 200px;
+            max-width: 260px;
+            text-align: center;
+        }
+
+        .step-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            color: #222233;
+            margin-bottom: 16px;
+        }
+
+        .step h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* ============ GALLERY ============ */
+        .gallery {
+            padding: 100px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .gallery-grid {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            flex: 1;
+            min-width: 220px;
+            max-width: 300px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+        }
+
+        .gallery-caption {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-faint);
+            margin-top: 12px;
+            letter-spacing: 0.1em;
+        }
+
+    /* ============ SPECS ============ */
+        .specs {
+            padding: 100px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .spec {
+            background: var(--bg);
+            padding: 32px;
+        }
+
+        .spec-label {
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .spec-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            color: var(--accent);
+        }
+
+        .spec-note {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* ============ FEATURES ============ */
+        .features {
+            padding: 100px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            display: flex;
+            align-items: baseline;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-check {
+            color: var(--text-faint);
+            margin-right: 16px;
+            font-size: 14px;
+        }
+
+        .feature-text {
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .feature-text span {
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        /* ============ COMPATIBILITY ============ */
+        .compatibility {
+            padding: 100px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .compat-text {
+            font-size: 16px;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            line-height: 1.8;
+        }
+
+        .compat-brands {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-faint);
+            letter-spacing: 0.1em;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 2;
+        }
+
+        /* ============ PRICE ============ */
+        .price-section {
+            padding: 120px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .price {
+            font-size: clamp(48px, 8vw, 72px);
+            font-weight: 300;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .price-note {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 48px;
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            padding: 48px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-format {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #222233;
+            letter-spacing: 0.3em;
+            margin-bottom: 16px;
+        }
+
+        footer p {
+            font-size: 12px;
+            color: var(--text-faint);
+        }
+
+        footer a {
+            color: var(--text-dim);
+            text-decoration: none;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 600px) {
+            .hero { padding: 40px 20px; }
+            .hero-disc { width: 140px; height: 140px; }
+            .steps { gap: 32px; }
+            .spec-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-disc"></div>
+        <h1>REDBOOK</h1>
+        <p class="subtitle">USB Audio CD Player for Android</p>
+        <p class="tagline">Remember when music was <em>physical</em>?</p>
+        <p class="sub-tagline">Connect a USB CD drive to your Android device. Insert a disc. Press play. No ripping, no compression, no compromise.</p>
+        <a href="#" class="cta-button">Get It on Google Play</a>
+        <p class="scroll-hint">↓</p>
+    </section>
+
+    <!-- HERO PHOTO -->
+    <section class="hero-photo">
+        <img src="img-hero.jpg" alt="Redbook player on BlackBerry Key2 with CD and Philips Fidelio headphones">
+        <div class="hero-photo-overlay">
+            <p>Music you can hold in your hands.</p>
+        </div>
+    </section>
+
+    <!-- HI-FI SETUP PHOTO -->
+    <section class="hero-photo">
+        <img src="img-hifi-setup.jpg" alt="Redbook on FiiO R7 in a vintage hi-fi setup with floor-standing speakers">
+        <div class="hero-photo-overlay">
+            <p>At home in any hi-fi setup.</p>
+        </div>
+    </section>
+
+    <!-- NOSTALGIA -->
+    <section class="nostalgia">
+        <p class="lead">There's something about putting a disc in a tray, hearing it spin up, and pressing play.</p>
+        <p class="body">
+            The warmth of a CD collection. Liner notes spread across your lap.
+            The ritual of choosing what to listen to — not what an algorithm chose for you.
+            <br><br>
+            Redbook brings that ritual to your Android device. Pure, uncompressed,
+            bit-perfect audio — exactly as the mastering engineer intended.
+            16 bits. 44,100 samples per second. The Red Book standard that defined digital music.
+        </p>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works">
+        <p class="section-title">How It Works</p>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>Connect</h3>
+                <p>Plug any USB CD or DVD drive into your Android device using a USB-C cable or OTG adapter.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">02</div>
+                <h3>Insert</h3>
+                <p>Drop in an audio CD. Redbook reads the disc, identifies the album, and fetches the cover art.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">03</div>
+                <h3>Listen</h3>
+                <p>Bit-perfect PCM audio streams directly from the disc to your ears. Zero compression. Zero resampling.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="gallery">
+        <p class="section-title">In Action</p>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="img-splash.jpg" alt="Redbook splash screen on Samsung S25">
+                <p class="gallery-caption">Connect &amp; detect</p>
+            </div>
+            <div class="gallery-item">
+                <img src="img-nowplaying.jpg" alt="Now playing view with cover art">
+                <p class="gallery-caption">Now playing</p>
+            </div>
+            <div class="gallery-item">
+                <img src="img-tracklist.jpg" alt="Full track listing">
+                <p class="gallery-caption">Track listing</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPECS -->
+    <section class="specs">
+        <p class="section-title">Audio Specifications</p>
+        <div class="spec-grid">
+            <div class="spec">
+                <div class="spec-label">Format</div>
+                <div class="spec-value">PCM</div>
+                <div class="spec-note">Uncompressed digital audio</div>
+            </div>
+            <div class="spec">
+                <div class="spec-label">Bit Depth</div>
+                <div class="spec-value">16 bit</div>
+                <div class="spec-note">Red Book standard</div>
+            </div>
+            <div class="spec">
+                <div class="spec-label">Sample Rate</div>
+                <div class="spec-value">44.1 kHz</div>
+                <div class="spec-note">44,100 samples/second</div>
+            </div>
+            <div class="spec">
+                <div class="spec-label">Bit Rate</div>
+                <div class="spec-value">1,411 kbps</div>
+                <div class="spec-note">Uncompressed stereo</div>
+            </div>
+            <div class="spec">
+                <div class="spec-label">Channels</div>
+                <div class="spec-value">Stereo</div>
+                <div class="spec-note">Left + Right</div>
+            </div>
+            <div class="spec">
+                <div class="spec-label">Signal Path</div>
+                <div class="spec-value">Bit-Perfect</div>
+                <div class="spec-note">No DSP, no resampling</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <p class="section-title">Features</p>
+        <div class="feature-list">
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Automatic album, artist, and track identification <span>via MusicBrainz</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Cover art fetched automatically <span>from Cover Art Archive</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Disc swap detection <span>eject a disc, insert another — no restart needed</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Lock screen and notification controls <span>via Android Media Session</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Apple SuperDrive supported <span>automatic initialization</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Works with any USB CD/DVD drive <span>generic SCSI/MMC standard</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">Monochrome audiophile interface <span>designed to disappear</span></span>
+            </div>
+            <div class="feature">
+                <span class="feature-check">—</span>
+                <span class="feature-text">No ads. No tracking. No subscriptions. <span>Ever.</span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPATIBILITY -->
+    <section class="compatibility">
+        <p class="section-title">Compatibility</p>
+        <p class="compat-text">
+            Works with any Android device that supports USB Host (OTG) — from audiophile streamers to everyday phones. Connect any standard USB CD or DVD drive.
+        </p>
+        <p class="compat-brands">
+            FiiO R7 · FiiO R9 · Shanling M7 · HiBy RS6 · iBasso DX320<br>
+            Samsung Galaxy · Google Pixel · OnePlus · Xiaomi · BlackBerry<br>
+            Sony Walkman · Any Android with USB-C
+        </p>
+    </section>
+
+    <!-- PRICE -->
+    <section class="price-section">
+        <p class="section-title">One App. One Price. Everything Included.</p>
+        <div class="price">$7.99</div>
+        <p class="price-note">No subscriptions. No in-app purchases. No ads. Buy once, own forever.</p>
+        <a href="#" class="cta-button">Get It on Google Play</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="footer-format">PCM · 16 BIT · 44.1 kHz · 1411 kbps</p>
+        <p>&copy; 2026 Redbook · <a href="mailto:hello@redbookaudioplayer.com">hello@redbookaudioplayer.com</a></p>
+    </footer>
+
+</body>
+</html>
