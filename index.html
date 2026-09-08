@@ -462,6 +462,7 @@
         }
         /* ============ INSTALLATIONS MAP ============ */
         .map-section {
+            display: none; /* KARTAN DOLD — ta bort denna rad för att visa igen */
             padding: 100px 24px;
             border-top: 1px solid var(--border);
         }
@@ -858,6 +859,11 @@
     <script src="/vendor/leaflet/leaflet.js"></script>
     <script>
     (function () {
+        // KARTAN DOLD (.map-section har display:none) — hoppa över helt.
+        var mapEl = document.getElementById('map');
+        if (!mapEl || mapEl.offsetParent === null) {
+            return;
+        }
         var map = L.map('map', {
             zoomControl: true,
             attributionControl: true,
